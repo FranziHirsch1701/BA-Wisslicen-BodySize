@@ -604,7 +604,7 @@ longdat <- function(dat) {
   
   dat_long_raw <- dat_clean %>%
     dplyr::select(phylum, genus, FAD_stage, LAD_stage, 
-                  size_logvol, diet_simplified, motility_simplified, life_habit_simplified) %>% # occ_bin entfernt!
+                  size_logvol, diet_simplified, motility_simplified, life_habit_simplified) %>% 
     filter(LAD_stage >= FAD_stage) %>% 
     rowwise() %>%
     mutate(stage_id = list(seq(FAD_stage, LAD_stage))) %>%
@@ -614,18 +614,18 @@ longdat <- function(dat) {
   dat_genus <- dat_long_raw %>%
     group_by(stage_id, genus) %>%
     summarise(
-      occ_raw = n(), # Zählt die Vorkommen pro Gattung und Stufe
+      occ_raw = n(), 
       size_logvol = mean(size_logvol, na.rm = TRUE), 
       diet_simplified = first(diet_simplified),
       motility_simplified = first(motility_simplified),
       life_habit_simplified = first(life_habit_simplified),
       phylum = first(phylum),
-      LAD_stage = first(LAD_stage), # occ_bin auch hier entfernt!
+      LAD_stage = first(LAD_stage), 
       .groups = "drop"
     ) %>%
     mutate(
       extinct_in_stage = if_else(stage_id == LAD_stage, 1L, 0L),
-      occ_log = log1p(occ_raw) # Logarithmierte Occurrences pro Stufe. Das nutzen wir!
+      occ_log = log1p(occ_raw) 
     )
   
   return(dat_genus)
